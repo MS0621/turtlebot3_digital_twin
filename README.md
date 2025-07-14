@@ -6,6 +6,8 @@
 ---
 ### Turtlebot3 홈페이지 : https://emanual.robotis.com/docs/en/platform/turtlebot3/quick-start/
 ---
+## 시뮬레이션에 사용한 Gazebo 환경
+<img width="1000" height="700" alt="Image" src="https://github.com/user-attachments/assets/b80a1bb7-9c92-4904-b78f-2ef06506364c" />
 
 ## 진행한 코드와 시나리오 (라인 트레이싱을 통해 실행한 시뮬레이션)
 1. SIFT로 표지판 인식 및 표지판에 따른 동작 구현
