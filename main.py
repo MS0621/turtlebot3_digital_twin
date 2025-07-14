@@ -63,7 +63,7 @@ class CameraNode(Node):
         self.pub_stop = self.create_publisher(Float64, '/control/max_vel',1)
         self.park = self.create_publisher(Bool, '/detect/parking_sign_detected', 1)
         self.start = self.create_publisher(Bool, '/start', 1)
-        self.model = YOLO("best.pt")
+        self.model = YOLO("/home/minseopjeong/turtlebot3_ws/best.pt")
         self.yolo_class_names = self.model.names
         self.row_duplicate_state = False
         self.x = 0.0

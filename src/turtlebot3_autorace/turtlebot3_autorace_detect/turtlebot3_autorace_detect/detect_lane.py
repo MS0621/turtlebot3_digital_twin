@@ -30,6 +30,7 @@ from sensor_msgs.msg import CompressedImage
 from sensor_msgs.msg import Image
 from std_msgs.msg import Float64
 from std_msgs.msg import UInt8
+from std_msgs.msg import Bool
 
 
 class DetectLane(Node):
@@ -120,12 +121,12 @@ class DetectLane(Node):
             self.sub_image_original = self.create_subscription(
                 CompressedImage, '/detect/image_input/compressed', self.cbFindLane, 1
                 )
-        elif self.sub_image_type == 'raw':                                                                                                                                                                                                                                      
+        elif self.sub_image_type == 'raw':
             self.sub_image_original = self.create_subscription(
                 Image, '/detect/image_input', self.cbFindLane, 1
                 )
 
-        if self.pub_image_type == 'compressed':                                                                             
+        if self.pub_image_type == 'compressed':
             self.pub_image_lane = self.create_publisher(
                 CompressedImage, '/detect/image_output/compressed', 1
                 )
@@ -162,6 +163,9 @@ class DetectLane(Node):
 
         self.pub_lane_state = self.create_publisher(UInt8, '/detect/lane_state', 1)
 
+        self.control_lane_pub = self.create_publisher(Float64, '/control/lane', 10)
+
+
         self.cvBridge = CvBridge()
 
         self.counter = 1
@@ -174,6 +178,20 @@ class DetectLane(Node):
 
         self.mov_avg_left = np.empty((0, 3))
         self.mov_avg_right = np.empty((0, 3))
+
+        # 주차 모드 여부
+        self.is_parking_mode = False
+
+        # 주차 모드 토픽 구독
+        self.sub_parking_mode = self.create_subscription(
+            Bool,
+            '/parking_mode',
+            self.cb_parking_mode,
+            1
+        )
+        # 노란 선 인식 여부 publisher
+        self.pub_yellow_visible = self.create_publisher(Bool, '/yellow_line_visible', 1)
+
 
     def cbGetDetectLaneParam(self, parameters):
         for param in parameters:
@@ -233,12 +251,20 @@ class DetectLane(Node):
                     self.mov_avg_left, np.array([self.left_fit]), axis=0
                     )
 
-            if white_fraction > 3000:
+            # if white_fraction > 3000:
+            #     self.right_fitx, self.right_fit = self.fit_from_lines(
+            #         self.right_fit, cv_white_lane)
+            #     self.mov_avg_right = np.append(
+            #         self.mov_avg_right, np.array([self.right_fit]), axis=0
+            #         )
+            # 흰선 무시
+            if white_fraction > 3000 and not self.is_parking_mode:
                 self.right_fitx, self.right_fit = self.fit_from_lines(
                     self.right_fit, cv_white_lane)
                 self.mov_avg_right = np.append(
                     self.mov_avg_right, np.array([self.right_fit]), axis=0
-                    )
+                )
+
         except Exception:
             if yellow_fraction > 3000:
                 self.left_fitx, self.left_fit = self.sliding_windown(cv_yellow_lane, 'left')
@@ -506,7 +532,13 @@ class DetectLane(Node):
 
         if self.reliability_white_line > 50 and self.reliability_yellow_line > 50:
             if white_fraction > 3000 and yellow_fraction > 3000:
-                centerx = np.mean([self.left_fitx, self.right_fitx], axis=0)
+                # centerx = np.mean([self.left_fitx, self.right_fitx], axis=0)
+                if self.is_parking_mode:
+                    centerx = self.left_fitx + 240  # 노란선만 기준
+                    self.get_logger().info('[주차모드] 노란선 기준으로 중앙 계산 중')
+                else:
+                    centerx = np.mean([self.left_fitx, self.right_fitx], axis=0)  # 일반 모드
+
                 pts = np.hstack((pts_left, pts_right))
                 pts_center = np.array([np.transpose(np.vstack([centerx, ploty]))])
 
@@ -600,6 +632,10 @@ class DetectLane(Node):
                 msg_desired_center.data = centerx.item(350)
                 self.pub_lane.publish(msg_desired_center)
 
+                if self.is_parking_mode:
+                    self.get_logger().info('[주차모드] /control/lane 토픽에 중심 좌표 publish 중')
+                    self.control_lane_pub.publish(msg_desired_center)
+
             self.pub_image_lane.publish(self.cvBridge.cv2_to_compressed_imgmsg(final, 'jpg'))
 
         elif self.pub_image_type == 'raw':
@@ -609,7 +645,19 @@ class DetectLane(Node):
                 msg_desired_center.data = centerx.item(350)
                 self.pub_lane.publish(msg_desired_center)
 
+                if self.is_parking_mode:
+                    self.get_logger().info('[주차모드] /control/lane 토픽에 중심 좌표 publish 중')
+                    self.control_lane_pub.publish(msg_desired_center)
+
             self.pub_image_lane.publish(self.cvBridge.cv2_to_imgmsg(final, 'bgr8'))
+        
+        msg_yellow_visible = Bool()
+        msg_yellow_visible.data = yellow_fraction > 3000
+        self.pub_yellow_visible.publish(msg_yellow_visible)
+
+    # 주차 
+    def cb_parking_mode(self, msg):
+        self.is_parking_mode = msg.data
 
 
 def main(args=None):
@@ -622,4 +670,3 @@ def main(args=None):
 
 if __name__ == '__main__':
     main()
-
