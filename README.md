@@ -36,4 +36,5 @@ main.py 내용 확인
 
 #### 세부적인 내용 ppt 파일 내용 확인
 
-[▶️ PPT 파일 보기](https://yourdomain.com/files/presentation.pptx)
+[▶️ PPT 파일 보기](https://github.com/MS0621/turtlebot3_digital_twin/blob/main/B-2_%ED%98%91%EB%8F%993.pptx?raw=true)
+
