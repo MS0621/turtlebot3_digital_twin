@@ -34,8 +34,9 @@ main.py 내용 확인
 #### 6. 통합 GUI 구현
 main.py 내용 확인
 
-#### 세부적인 내용 ppt 파일 내용 확인
+#### More about project
 
-[▶️ PPT 파일 보기](https://github.com/MS0621/turtlebot3_digital_twin/raw/main/B-2_%ED%98%91%EB%8F%993.pptx)
+[▶️ PPT 파일로 보기](https://docs.google.com/presentation/d/1N775yV8a7xXwEGvfC-RT5nGJwW_dOJMB/preview)
+[▶️ PDF 파일로 보기](https://drive.google.com/file/d/1VVyBWIylGhkU-lUMM9-Txxxd_Jc9WiGu/preview)
 
 
