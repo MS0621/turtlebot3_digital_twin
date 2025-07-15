@@ -34,9 +34,10 @@ main.py 내용 확인
 #### 6. 통합 GUI 구현
 main.py 내용 확인
 
-#### More about project
+### More about project
 
-[▶️ PPT 파일로 보기](https://docs.google.com/presentation/d/1N775yV8a7xXwEGvfC-RT5nGJwW_dOJMB/preview)
+[▶️ PPT 파일로 보기](https://docs.google.com/presentation/d/1N775yV8a7xXwEGvfC-RT5nGJwW_dOJMB/edit?usp=drive_link&ouid=100435134823954159263&rtpof=true&sd=true/preview)
+
 [▶️ PDF 파일로 보기](https://drive.google.com/file/d/1VVyBWIylGhkU-lUMM9-Txxxd_Jc9WiGu/preview)
 
 
