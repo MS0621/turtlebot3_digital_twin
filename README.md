@@ -1,7 +1,7 @@
 
 
-### Gazebo Turtlebot3 Simulation
-#### 터틀봇3 사용하기전 시뮬레이션상에서 다양한 기능 구현
+## Gazebo Turtlebot3 Simulation
+### 터틀봇3 사용하기전 시뮬레이션상에서 다양한 기능 구현
 
 ---
 ### Turtlebot3 홈페이지 : https://emanual.robotis.com/docs/en/platform/turtlebot3/quick-start/
@@ -17,7 +17,7 @@
 5. 특정 구간 진입시 동작 구현(어린이 보호구역)​
 6. 통합 GUI 구현
 
-### 시나리오 세부 설명
+## 시나리오 세부 설명
 
 #### 1. SIFT로 표지판 인식 및 표지판에 따른 동작 구현
 [1.webm](https://github.com/user-attachments/assets/cb30dcd7-e50f-4ee8-9e81-9011e446c42a)
